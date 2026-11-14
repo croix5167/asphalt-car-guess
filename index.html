@@ -1,0 +1,473 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="description" content="用四项赛车性能线索，猜出隐藏车型。">
+<title>极速谜车 · 猜车挑战</title>
+<style>
+:root{color-scheme:dark;--bg:#101310;--panel:#171d18;--ink:#f1f3eb;--muted:#a9b3a8;--line:#354038;--lime:#dcfc57;--amber:#ffd584;--blue:#a8d7ff}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--ink);font:15px/1.55 system-ui,"Microsoft YaHei",sans-serif}button,input{font:inherit}button{cursor:pointer}button:disabled{cursor:default;opacity:.55}a{color:var(--lime)}:focus-visible{outline:2px solid var(--lime);outline-offset:4px}[hidden]{display:none!important}
+.wrap{width:min(1024px,calc(100% - 42px));margin:auto}.top{display:flex;justify-content:space-between;align-items:center;padding:22px 0;color:var(--muted);border-bottom:1px solid var(--line);letter-spacing:.12em;font-size:12px;font-weight:700}.brand{color:var(--ink)}.brand b{color:var(--lime);margin-right:8px}.hero{position:relative;overflow:hidden;border:1px solid var(--line);margin-top:26px;padding:32px 34px;background:radial-gradient(ellipse at 95% 30%,#314025,transparent 67%),#171e17;min-height:235px;display:flex;align-items:center}.intro{position:relative;z-index:1}.tag,.index{font-family:ui-monospace,monospace;font-size:12px;letter-spacing:.13em;color:var(--lime);font-weight:700}.tag::before{content:"";display:inline-block;width:7px;height:7px;background:var(--lime);margin-right:10px}.hero h1{margin:8px 0 7px;font-size:clamp(42px,7.8vw,79px);line-height:1.08;letter-spacing:-.055em}.hero p{margin:12px 0 0;color:#c1cebd}.car{position:absolute;right:3%;width:49%;top:4%;height:92%;opacity:.85}.panel{background:var(--panel);border:1px solid var(--line);padding:23px 26px;margin:18px 0}.head,.actions,.legend,.rowtop{display:flex;gap:12px;align-items:center;justify-content:space-between}.head h2{font-size:19px;margin:0}.index{margin-right:10px}.pill{font-size:12px;padding:4px 9px;border:1px solid var(--line);color:var(--muted);white-space:nowrap}.controls{display:flex;gap:10px;margin-top:16px}.finder{flex:1;min-width:0;position:relative}input{width:100%;height:49px;border:1px solid #515e53;color:var(--ink);background:#101511;padding:0 14px;border-radius:0}input::placeholder{color:#a0a99e}.primary,.ghost,.choice{border:1px solid var(--line);background:transparent;color:var(--ink);padding:9px 14px}.primary{background:var(--lime);color:#171c07;border-color:var(--lime);font-weight:800;min-width:104px}.ghost:hover,.choice:hover,.choice.active{background:#2c3927;border-color:#788c6f}.actions{margin-top:12px;flex-wrap:wrap;justify-content:flex-start}.meter{display:flex;gap:5px;margin-left:auto}.meter span{width:13px;height:7px;border:1px solid #667362}.meter span.used{background:var(--lime);border-color:var(--lime)}.suggest{position:absolute;left:0;right:0;top:100%;z-index:3;background:#202920;border:1px solid #657a63;max-height:225px;overflow:auto;box-shadow:0 12px 25px #0008}.choice{display:block;width:100%;text-align:left;border-width:0 0 1px}.message{min-height:24px;color:var(--muted);margin:10px 0 0}.result{margin-top:15px;padding:12px 15px;border:1px solid #758f44;background:#26341e;color:#e8fac8}.result a{margin-left:8px}.legend{color:var(--muted);font-size:12px;flex-wrap:wrap;justify-content:flex-start;margin-top:10px}.high{color:var(--amber)}.low{color:var(--blue)}.same{color:var(--lime)}.history{list-style:none;margin:16px 0 0;padding:0}.history li{margin-top:9px;padding:12px;border:1px solid var(--line);background:#121713}.rowtop strong{overflow-wrap:anywhere}.rowtop small{white-space:nowrap;color:var(--muted)}.stats{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:6px;margin-top:10px}.stat{display:flex;flex-direction:column;background:#1b231c;padding:8px 10px;min-width:0}.stat .label{color:var(--muted);font-size:12px}.stat b{font:700 clamp(15px,3vw,22px)/1.4 ui-monospace,monospace}.stat small{font-size:11px}.empty{padding:23px 10px;text-align:center;border:1px dashed var(--line);color:var(--muted);margin:15px 0 0}.foot{color:var(--muted);font-size:12px;padding:5px 0 28px}.foot a{color:inherit}
+@media(max-width:650px){.wrap{width:calc(100% - 24px)}.hero{padding:21px 18px;min-height:176px}.car{right:-11%;width:72%;opacity:.33}.hero p{font-size:13px}.panel{padding:16px 12px}.controls{gap:6px}.primary{min-width:72px;padding:8px}.stat{padding:6px 5px}.stat small{font-size:10px}}
+.roster{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,220px),1fr));gap:7px;list-style:none;margin:10px 0 0;padding:0}.roster button{width:100%;height:100%;border:1px solid var(--line);background:#101511;color:var(--ink);padding:8px 10px;text-align:left}.roster button:hover:not(:disabled){background:#2c3927;border-color:#788c6f}.roster button[aria-pressed="true"]{border-color:var(--lime);color:var(--lime)}.roster small{color:var(--muted)}.roster-title{margin:16px 0 0;font-size:14px}.actions{margin-top:10px}
+</style>
+<style>
+.roster-scroll{max-height:330px;overflow:auto;scroll-padding-top:34px;padding:0 5px 7px;outline-offset:2px}.roster-group h4{position:sticky;top:0;background:var(--panel);margin:0;padding:6px 2px;color:var(--lime);font:700 15px ui-monospace,monospace}.roster-group .roster{margin:0 0 10px}.alphabet{display:flex;flex-wrap:wrap;gap:4px;margin:10px 0}.alphabet button{min-width:28px;padding:2px 5px;color:var(--ink);background:#101511;border:1px solid var(--line)}.alphabet button:hover{color:var(--lime);border-color:var(--lime)}.scope{color:var(--muted);font-size:12px;margin:8px 0}
+</style>
+</head>
+<body><div class="wrap">
+<header class="top"><span class="brand"><b>◩</b> APEX / GARAGE</span><span>车型推理挑战</span></header>
+<main>
+<section class="hero" aria-labelledby="game-title">
+<div class="intro"><div class="tag">MYSTERY CAR</div><h1 id="game-title">极速谜车</h1><p>用四项性能线索，找出藏在车库里的那辆车。</p></div>
+<svg class="car" viewBox="0 0 480 210" aria-hidden="true">
+<defs><pattern id="grid" width="20" height="20" patternUnits="userSpaceOnUse"><path d="M20 0H0V20" fill="none" stroke="#b8da8d" opacity=".17"/></pattern><linearGradient id="body" x2="0" y2="1"><stop stop-color="#90a35e" stop-opacity=".35"/><stop offset="1" stop-color="#121912" stop-opacity=".7"/></linearGradient></defs>
+<path d="M0 0H480V210H0Z" fill="url(#grid)"/><path d="M25 172h430M60 40h370M100 186v-20m270 20v-20" fill="none" stroke="#7c9665" stroke-dasharray="4 6"/>
+<path d="M37 145l14-23 78-19 60-37q13-8 36-8h69q29 0 47 8l52 33 30 8 22 24-4 19-28 4H70l-32-5z" fill="url(#body)" stroke="#d3f476" stroke-width="2"/><path d="M154 103l48-31h99q21 0 34 7l36 23-97 3zM250 73l-8 30M53 122l60 7 34-14m220-8 49 8m-269 31h177" fill="none" stroke="#a9ce68" stroke-width="1.5"/><g fill="#141b13" stroke="#c7e47f" stroke-width="2"><circle cx="117" cy="147" r="25"/><circle cx="365" cy="147" r="25"/><circle cx="117" cy="147" r="14"/><circle cx="365" cy="147" r="14"/></g>
+</svg>
+</section>
+<section class="panel" aria-labelledby="play-title">
+<div class="head"><h2 id="play-title">提交猜测</h2><span class="pill" id="counter"></span></div>
+<form id="form" class="controls" autocomplete="off">
+<div class="finder"><input id="query" type="search" placeholder="输入品牌或车型，例如 Koenigsegg" aria-label="搜索车型" aria-controls="options" aria-expanded="false" role="combobox" aria-autocomplete="list"><div id="options" class="suggest" role="listbox" hidden></div></div>
+<button class="primary" id="submit" type="submit">提交 ↵</button>
+</form>
+<div class="actions"><button class="ghost" id="new" type="button">↻ 新一局</button></div>
+<p class="message" id="message" role="status"></p><div class="result" id="result" hidden></div>
+<h3 class="roster-title" id="roster-title">国服候选车型 <span class="pill" id="roster-count"></span></h3>
+<p class="scope" id="scope"></p>
+<nav class="alphabet" id="alphabet" aria-label="按首字母跳转"></nav>
+<div class="roster-scroll" id="roster" tabindex="0" role="region" aria-labelledby="roster-title"></div>
+</section>
+<section class="panel" aria-labelledby="clues-title">
+<div class="head"><h2 id="clues-title">性能线索</h2><span class="pill">国服 · 满改</span></div>
+<div class="legend">猜测车辆相对目标： <span class="high">↑ 偏高</span><span class="low">↓ 偏低</span><span class="same">= 相同</span></div>
+<p class="empty" id="empty">提交第一次猜测后，这里会显示四项对比。</p>
+<ol class="history" id="history"></ol>
+</section>
+</main>
+<footer class="foot">国服满改数据来源 <a href="https://a9hub.top/" target="_blank" rel="noopener">A9 Hub · a9赛事小助手</a></footer>
+</div>
+<script>
+// A9 Hub China-server garage snapshot. Values are the fully upgraded panel stats.
+const cnCoverage = "收录 A9 Hub 国服车库全部 345 辆，按英文车名首字母分组。";
+const cnCars = [
+  ["Ginetta Akula",369.5,83.54,72.54,66.41,"https://a9hub.top/","吉内塔"],
+  ["Porsche 718 Cayman PAC-MAN Edition",360,81.95,64.77,68.37,"https://a9hub.top/","豆包/吃豆人 保时捷"],
+  ["Bentley Speed 8",367.1,86.53,68.34,58.91,"https://a9hub.top/","宾利"],
+  ["TVR Cerbera Speed 12",403.3,82.42,79.44,85.67,"https://a9hub.top/","TVR"],
+  ["Dodge Challenger Halloween Edition",372.4,86.52,56.05,68.79,"https://a9hub.top/","道奇"],
+  ["Audi R8 Coupe V10 Performance Quattro",341.2,76.99,64.17,48.62,"https://a9hub.top/","大R8 奥迪"],
+  ["Audi R18 E-Tron Quattro 2012",400.4,78.77,55.32,54.21,"https://a9hub.top/","R18 奥迪"],
+  ["Audi R8 LMP1 2000",422.7,83.9,60.28,66.17,"https://a9hub.top/","R8 LMP 奥迪"],
+  ["Hennessey Venom F5 Revolution",535.4,82.77,55.58,50.2,"https://a9hub.top/","R-F5 轩尼诗"],
+  ["Mercedes-Benz Mercedes-AMG One",375.2,81.53,78.84,60.91,"https://a9hub.top/","AMG One 梅赛德斯-奔驰"],
+  ["Lamborghini SC63",353.8,85.38,70.15,56.43,"https://a9hub.top/","SC63 兰博基尼"],
+  ["Artega Scalo Superellettra",316.3,85.81,58.04,71.98,"https://a9hub.top/","ASS 阿尔特加"],
+  ["Hyundai Ioniq 5 N",275.9,88.63,80.51,63.38,"https://a9hub.top/","现代5N 现代"],
+  ["Koenigsegg CC850",478.3,82.37,54.39,49.63,"https://a9hub.top/","CC850 科尼赛克"],
+  ["SSC Tuatara Striker",477.7,80.65,63.37,55.62,"https://a9hub.top/","小蜥蜴 西尔贝"],
+  ["Ferrari 12 Cilindri",351.3,85.29,70.13,75.09,"https://a9hub.top/","12缸 法拉利"],
+  ["Pagani Codalunga",398.3,81.7,65.49,72.01,"https://a9hub.top/","长尾 帕加尼"],
+  ["Ferrante Design Elytron",462.4,85.24,56.39,47.19,"https://a9hub.top/","dose 费兰特"],
+  ["Nio EP9 Anniversary Special Edition",348.7,86.14,59.71,60.93,"https://a9hub.top/","EP9周年 蔚来"],
+  ["Bugatti Tourbillon",492.8,85.24,70.17,48.98,"https://a9hub.top/","陀飞轮 布加迪"],
+  ["Mercedes-Benz Biome 2010",337,80.62,80.16,83.39,"https://a9hub.top/","梅赛德斯-奔驰"],
+  ["Ares Panther",368.6,83.84,70.82,49.07,"https://a9hub.top/","黑豹 阿瑞斯"],
+  ["LEGO Technic Bugatti Chiron Pur Sport",394.4,84.98,61.19,73.64,"https://a9hub.top/","乐高ps龙 乐高机械组"],
+  ["Hyundai N Vision 74",404.5,75.17,55.76,58.53,"https://a9hub.top/","N74 现代"],
+  ["Porsche 911 GT3 RS 2023",360.6,87.44,91.59,71.56,"https://a9hub.top/","新蛙 保时捷"],
+  ["Porsche 911 GT3 R Rennsport",322.5,81.15,74.4,65.78,"https://a9hub.top/","911GT3 保时捷"],
+  ["Porsche 919 Street",372.4,87.83,85.29,62.21,"https://a9hub.top/","919 保时捷"],
+  ["Porsche 917 Living Legend",382.6,86.69,77.65,67.68,"https://a9hub.top/","917 保时捷"],
+  ["Porsche 918 Spyder Asphalt Edition",401.6,76.24,59.93,51.87,"https://a9hub.top/","918AE 保时捷"],
+  ["Zenvo TSR-S Dragonboat Edition",368.9,84.53,81.08,71.56,"https://a9hub.top/","自燃龙舟 Zenvo"],
+  ["Nilu27 Nilu",429.9,81.96,54.04,67,"https://a9hub.top/","NILU Nilu27"],
+  ["Lexus LFA Nurburgring Package",337.3,74.12,61.05,62.13,"https://a9hub.top/","LFA 雷克萨斯"],
+  ["Mercedes-Benz C11",414.7,79.49,56.98,58.2,"https://a9hub.top/","C11 梅赛德斯-奔驰"],
+  ["McLaren 750S Coupe",348.8,83.02,65.3,67.36,"https://a9hub.top/","750s 迈凯伦"],
+  ["Tushek Aeon E",491.5,86.23,46.43,35.37,"https://a9hub.top/","永旺 图舍克"],
+  ["Dodge Charger Srt Hellcat Redeye Widebody",342.6,76.31,51.13,58.64,"https://a9hub.top/","地狱猫 道奇"],
+  ["Mercedes-Benz C 63 AMG DTM",322.1,80.81,72.85,68.98,"https://a9hub.top/","C63 梅赛德斯-奔驰"],
+  ["Icona Vulcano Spyder",430.7,83.6,55.64,51.99,"https://a9hub.top/","冰山 意柯那"],
+  ["Zenvo Aurora Agil",379.4,83.12,70.3,64.25,"https://a9hub.top/","A极光 Zenvo"],
+  ["Ferrari F12 Berlinetta",357.2,81.86,61.13,68.14,"https://a9hub.top/","F12 法拉利"],
+  ["LEGO TECHNIC BMW M4 GT3 EVO",333.5,80.79,82.01,74.7,"https://a9hub.top/","乐高M4 GT3 乐高机械组"],
+  ["Automobili Pininfarina Battista Edizione Nino Farina",365.4,89.37,64.44,45.9,"https://a9hub.top/","红秋王 宾尼法利纳汽车"],
+  ["LAMBORGHINI HURACAN STERRATO",334.5,81.86,64.86,62.63,"https://a9hub.top/","越野牛 兰博基尼"],
+  ["W Motors Fenyr Super Sport CNY Edition",410.2,83,61.33,60.21,"https://a9hub.top/","新春狼 W汽车"],
+  ["CITROEN DS SURVOLT",291.4,81.82,81.42,64.56,"https://a9hub.top/","DS SURVOLT 雪铁龙"],
+  ["MOSLER SUPER GT",506.7,83.27,49.79,44.54,"https://a9hub.top/","莫斯勒GT 莫斯勒"],
+  ["Mercedes-Benz Vision One-Eleven",381,83.93,76.35,57.95,"https://a9hub.top/","Vision111 梅赛德斯-奔驰"],
+  ["De Tomaso P72",375.6,82.74,75.24,71.18,"https://a9hub.top/","P72 德·托马索"],
+  ["Ferrari 499P Modificata",358.6,84.54,85.32,77.85,"https://a9hub.top/","499P 法拉利"],
+  ["Lexus Electrified Sport Concept",379.2,88.43,50.26,55.59,"https://a9hub.top/","lexus concept 雷克萨斯"],
+  ["Aston Martin Valhalla Concept Car",376.9,82.25,81.76,59.55,"https://a9hub.top/","英灵殿 阿斯顿·马丁"],
+  ["Noble M600 Speedster",375.7,81.03,85.47,61.71,"https://a9hub.top/","M600 诺伯尔"],
+  ["Jaguar XJR-9",400.7,72.45,59.33,84.95,"https://a9hub.top/","XJR-9 捷豹"],
+  ["FV Frangivento Asfane",373.9,82.03,69.13,67.63,"https://a9hub.top/","鼠标 弗朗吉文托"],
+  ["Lamborghini Temerario",365.5,88.35,70.53,62.21,"https://a9hub.top/","Temerario 兰博基尼"],
+  ["Ford Shelby Super Snake",363.4,85.44,75.98,59.74,"https://a9hub.top/","超级蛇 福特"],
+  ["Pagani Utopia Coupe",367.9,81.03,80.63,77.19,"https://a9hub.top/","乌托邦 帕加尼"],
+  ["Mclaren 650S GT3",357,84.34,85.82,78.22,"https://a9hub.top/","650S 迈凯伦"],
+  ["Pagani Huayra R",376.4,83.04,58.21,64.11,"https://a9hub.top/","Huayra R 帕加尼"],
+  ["Aston Martin Victor",371.8,78.34,76.86,69.6,"https://a9hub.top/","维克托 阿斯顿·马丁"],
+  ["Porsche 935(2019)",352,84.94,87.96,72.61,"https://a9hub.top/","935 保时捷"],
+  ["Nissan GT-R Neon Edition",357,88.23,75.46,70.44,"https://a9hub.top/","霓虹GTR 日产"],
+  ["Glickenhaus 007S",358.6,89.33,82.63,55.24,"https://a9hub.top/","007S 格里肯豪斯"],
+  ["McLaren Sabre",363.1,87.04,68.06,58.45,"https://a9hub.top/","军刀 迈凯伦"],
+  ["Peugeot 9x8",344.3,90.03,94.15,69.94,"https://a9hub.top/","9x8 标致"],
+  ["Pagani Zonda R",368.3,84.54,57.29,67.54,"https://a9hub.top/","风之子 帕加尼"],
+  ["Nissan GTR-50 Italdesign",349.2,86.24,73.5,64.28,"https://a9hub.top/","GTR-50 日产"],
+  ["Chevrolet Corvette Grand Sport Halloween Edition",357.4,81.66,80.58,70.94,"https://a9hub.top/","五菱万圣版 雪佛兰"],
+  ["Aston Martin DBS GT Zagato",361.9,80.65,75.77,78.17,"https://a9hub.top/","Zagato 阿斯顿·马丁"],
+  ["Pagani Zonda Cinque",369.7,79.84,74.76,73.22,"https://a9hub.top/","Cinque 帕加尼"],
+  ["Citroen GT by Citroen",383.5,76.54,64.63,67.23,"https://a9hub.top/","雪铁龙GT 雪铁龙"],
+  ["Raesr Tachyon Speed",400.5,77.88,53.38,59.79,"https://a9hub.top/","超光速 雷斯尔"],
+  ["Ferrari 488 Challenge EVO",347.5,82.63,76.76,76.65,"https://a9hub.top/","488EVO 法拉利"],
+  ["Ford GT CNY Edition",366.8,79.14,68.15,73.89,"https://a9hub.top/","GT春节版 福特"],
+  ["Formula E Gen 3 EVO Championship Edition",345.1,90.21,77.89,62.24,"https://a9hub.top/","FE Gen3 FE电动方程式"],
+  ["Lamborghini Aventador SVJ Roadster",364.8,81.09,73.75,73.93,"https://a9hub.top/","SVJ 兰博基尼"],
+  ["Lamborghini SC18",355.6,81.99,64.05,82.46,"https://a9hub.top/","SC18 兰博基尼"],
+  ["Puritalia Berlinetta",349.3,83.35,82.35,69.23,"https://a9hub.top/","Berlinetta 普里塔利亚"],
+  ["Lamborghini Essenza SCV12",340.1,85.03,75.44,74.52,"https://a9hub.top/","SCV12 兰博基尼"],
+  ["Chevrolet Corvette ZR1",355.7,81.99,60.13,76.3,"https://a9hub.top/","大五菱 雪佛兰"],
+  ["Peugeot Onyx",365.6,81.94,84.83,59.59,"https://a9hub.top/","标致 标致"],
+  ["McLaren Senna GTR",357.9,82,60.85,77.62,"https://a9hub.top/","塞纳GTR 迈凯伦"],
+  ["TechRules AT96 Track Version",364.7,85.54,75.79,69.64,"https://a9hub.top/","腾风 泰克鲁斯·腾风"],
+  ["Porsche 911 GT3 RS",338.9,85.67,92.48,85.97,"https://a9hub.top/","绿蛙 保时捷"],
+  ["Ferrari Enzo Ferrari",365.8,75.19,64.75,72.1,"https://a9hub.top/","恩佐 法拉利"],
+  ["Porsche Carrera GT",344.7,78.59,84.59,82.64,"https://a9hub.top/","卡雷拉 保时捷"],
+  ["Mcmurtry Speirling",339.7,90.52,82.09,62.82,"https://a9hub.top/","风扇 麦克默特里"],
+  ["Lamborghini Aventador J",362.9,79.83,73.07,77.84,"https://a9hub.top/","AVJ 兰博基尼"],
+  ["Aston Martin Vantage GT12",337.6,78.13,86.61,80.23,"https://a9hub.top/","GT12 阿斯顿·马丁"],
+  ["Sin R1 550",368.3,76.91,45.46,74.04,"https://a9hub.top/","SIN 辛恩"],
+  ["Ferrari 812 SuperFast",354,81.1,63.17,74.34,"https://a9hub.top/","812 法拉利"],
+  ["VLF Force 1 V10",369.4,79.53,45.42,68.47,"https://a9hub.top/","1V10 VLF"],
+  ["Lamborghini Murcielago LP 640 Roadster",354,77.45,66.92,61.49,"https://a9hub.top/","蝙蝠 兰博基尼"],
+  ["Apex AP-0",334.8,80.83,89.01,74.95,"https://a9hub.top/","AP-0 Apex"],
+  ["LEGO Technic Aston Martin Valkyrie",372.3,81.04,65.74,59.77,"https://a9hub.top/","乐高女武神 乐高机械组"],
+  ["Arrinera Hussarya 33",352.1,78.4,59.28,47.41,"https://a9hub.top/","阿瑞娜33 阿瑞娜"],
+  ["Chevrolet Corvette Grand Sport",334.6,76.48,61.83,72.71,"https://a9hub.top/","五菱 雪佛兰"],
+  ["Jaguar C-X75",368.9,75.58,73.15,74.14,"https://a9hub.top/","大捷豹 捷豹"],
+  ["Lamborghini Autentica",366.8,78.82,47.2,68.72,"https://a9hub.top/","Autentica 兰博基尼"],
+  ["LEGO Technic Mclaren Senna GTR",351.9,83.45,82.23,67.44,"https://a9hub.top/","乐高塞纳 乐高机械组"],
+  ["Ferrari FXX K",363,83.81,43.69,72.3,"https://a9hub.top/","FXXK 法拉利"],
+  ["Lamborghini Aventador SV Coupe",367.9,80.83,47.78,66.48,"https://a9hub.top/","SV 兰博基尼"],
+  ["Lamborghini Gallardo LP 560-4",331.2,76.48,75.43,59.41,"https://a9hub.top/","盖拉多 兰博基尼"],
+  ["Ferrari F12tdf",360.3,78.33,38.46,75.86,"https://a9hub.top/","TDF 法拉利"],
+  ["Lamborghini Centenario",363.7,78.41,44.4,69.17,"https://a9hub.top/","百年牛 兰博基尼"],
+  ["Pagani Zonda HP Barchetta",350.1,79.44,73.51,73.66,"https://a9hub.top/","Barchetta 帕加尼"],
+  ["McLaren P1",364.6,83.64,47.54,62.89,"https://a9hub.top/","迈凯伦P1 迈凯伦"],
+  ["Apollo N",369.6,80.2,57.94,60.43,"https://a9hub.top/","菠萝N 阿波罗"],
+  ["Glickenhaus 003S",369,79.52,42.69,74.13,"https://a9hub.top/","003S 格里肯豪斯"],
+  ["Lamborghini Revuelto",361.5,86.36,76.33,54.22,"https://a9hub.top/","R牛 兰博基尼"],
+  ["Lotus E-R9",367.5,87.44,72.33,49.35,"https://a9hub.top/","ER-9 路特斯"],
+  ["Apollo EVO",355,85.46,70.34,65.79,"https://a9hub.top/","菠萝EVO 阿波罗"],
+  ["LEGO Technic Lamborghini Revuelto",368.2,83.11,70.61,56.07,"https://a9hub.top/","乐高R牛 乐高机械组"],
+  ["Ford GT MK IV",361.4,87.26,54.52,59.57,"https://a9hub.top/","MK4 福特"],
+  ["Lamborghini Sesto Elemento",347.2,88.16,70.97,74.78,"https://a9hub.top/","第六元素 兰博基尼"],
+  ["Lamborghini Huracan EVO Spyder",344,84.34,75.95,82.37,"https://a9hub.top/","小牛 兰博基尼"],
+  ["Lamborghini Invencible",340.4,88.49,75.74,67.64,"https://a9hub.top/","无敌牛 兰博基尼"],
+  ["Toyota GR Super Sport Concept",364.8,85.64,56.7,45.09,"https://a9hub.top/","GR concept 丰田"],
+  ["Mclaren Solus GT",335.4,89.3,83.11,76.82,"https://a9hub.top/","Solus GT 迈凯伦"],
+  ["McLaren 600LT Spider",340.5,86.11,83.17,74.54,"https://a9hub.top/","600LT 迈凯伦"],
+  ["Aston Martin V12 Vantage 2022",343.7,79.4,88.64,79.82,"https://a9hub.top/","V12 阿斯顿·马丁"],
+  ["Formula E Gen 2 Asphalt Edition",323.5,83.75,87.29,78.34,"https://a9hub.top/","FE Gen 2 FE电动方程式"],
+  ["Lamborghini Reventon Roadster",357,79.38,69.04,74.91,"https://a9hub.top/","雷文顿 兰博基尼"],
+  ["Lamborghini Diablo GT",349.2,74.97,63.52,58.83,"https://a9hub.top/","Diablo 兰博基尼"],
+  ["Chevrolet Corvette Stingray",327,81.52,60.15,64.47,"https://a9hub.top/","C8 雪佛兰"],
+  ["Maserati MC20",335.7,81.63,90.78,75.84,"https://a9hub.top/","MC20 玛莎拉蒂"],
+  ["Aston Martin One77",363.4,79.32,68.72,56.56,"https://a9hub.top/","One77 阿斯顿·马丁"],
+  ["Bugatti EB110",348.4,74.11,66.05,58.11,"https://a9hub.top/","EB110 布加迪"],
+  ["Lamborghini Miura Concept",346.7,73.39,56.22,60.53,"https://a9hub.top/","Miura 兰博基尼"],
+  ["McLaren 765LT",349.5,80.5,70.61,62.26,"https://a9hub.top/","765LT 迈凯伦"],
+  ["LEGO Technic Chevrolet Corvette Stingray",327.7,82.76,80.67,70.4,"https://a9hub.top/","乐高C8R 乐高机械组"],
+  ["Nissan R390 GT1",373.5,76.72,52.63,55.45,"https://a9hub.top/","日产R390 日产"],
+  ["Acura NSX GT3 EVO",313.9,74.31,86.11,73.78,"https://a9hub.top/","讴歌GT3 讴歌"],
+  ["Aston Martin DB12",343.2,74.11,69.68,77.89,"https://a9hub.top/","DB12 阿斯顿·马丁"],
+  ["Renault R.S. 01",321,83.67,61.35,71.97,"https://a9hub.top/","雷诺RS 雷诺"],
+  ["McLaren Elva",339.2,81.3,75.51,65.91,"https://a9hub.top/","Elva 迈凯伦"],
+  ["Porsche 911 Turbo 50 Years",343.5,82.94,53.72,59.39,"https://a9hub.top/","911 Turbo 保时捷"],
+  ["Brabham BT62",322.4,83.88,76.08,75.66,"https://a9hub.top/","BT62 布拉汉姆"],
+  ["Drako GTE",346.3,81.97,47.38,61.36,"https://a9hub.top/","德拉科GTE 德拉科"],
+  ["Ferrari 599XX EVO",309.9,80.97,83.61,70.81,"https://a9hub.top/","法拉利599 法拉利"],
+  ["McLaren GT",339.2,80.97,69.06,57.25,"https://a9hub.top/","迈凯伦GT 迈凯伦"],
+  ["Aston Martin DBS SuperLeggera",355.4,79.17,70.7,73.85,"https://a9hub.top/","DBS 阿斯顿·马丁"],
+  ["Porsche 718 Cayman GT4 ClubSport",314.7,73.44,87.23,70.53,"https://a9hub.top/","718GT4 保时捷"],
+  ["Mazda Furai",305.5,80.97,57.21,49.7,"https://a9hub.top/","风籁 马自达"],
+  ["Kepler Motion",338.7,86.54,48.81,61.41,"https://a9hub.top/","开普勒 开普勒"],
+  ["Mercedes-Benz SLR McLaren",352.9,78.13,66.61,79.52,"https://a9hub.top/","SLR 梅赛德斯-奔驰"],
+  ["ATS Automobili Corsa RRTurbo",322.3,87.54,68.39,45.94,"https://a9hub.top/","RRTurbo ATS"],
+  ["Ferrari F40",334.1,72.87,69.3,63.45,"https://a9hub.top/","F40 法拉利"],
+  ["Bentley Mulliner Bacalar",329.6,77.37,67.2,55.81,"https://a9hub.top/","Bacalar 宾利"],
+  ["Ferrari 488 GTB",347.6,80.24,48.38,65.84,"https://a9hub.top/","488 法拉利"],
+  ["Bentley Continental GT Speed",348.1,76.45,74.06,59.19,"https://a9hub.top/","宾利欧陆 宾利"],
+  ["Dodge Viper GTS",353.4,80.25,45.24,67.43,"https://a9hub.top/","紫蛇 道奇"],
+  ["ItalDesign Zerouno",340.9,79.26,58.36,54.08,"https://a9hub.top/","假牛 意大利设计"],
+  ["Vencer Sarthe",350.1,74.1,62.92,46.81,"https://a9hub.top/","剃刀 芬瑟"],
+  ["McLaren Artura",337.8,81.14,68.52,47.54,"https://a9hub.top/","Artura 迈凯伦"],
+  ["Lamborghini Huracan Super Trofeo Evo",311.6,82.63,63.62,54.57,"https://a9hub.top/","小小牛 兰博基尼"],
+  ["Lamborghini Huracan STO",320.4,86.02,73.3,57.28,"https://a9hub.top/","STO 兰博基尼"],
+  ["Ferrari J50",350.5,80.34,48.31,64.48,"https://a9hub.top/","J50 法拉利"],
+  ["Maserati Alfieri",335.9,74.49,41.45,73,"https://a9hub.top/","Alfieri 玛莎拉蒂"],
+  ["Acura 2017 NSX",323.8,84.48,55.36,54.73,"https://a9hub.top/","讴歌 讴歌"],
+  ["Ford GT MKII",315.2,86.25,78.97,67.89,"https://a9hub.top/","马克2 福特"],
+  ["Aston Martin Valour",331,78.23,56.43,60.73,"https://a9hub.top/","Valour 阿斯顿·马丁"],
+  ["Cadillac Cien Concept",368,76.55,42.48,66.28,"https://a9hub.top/","塞恩 凯迪拉克"],
+  ["Nissan GT-R Nismo",329.9,84.75,53.68,54.75,"https://a9hub.top/","GTR 日产"],
+  ["Ferrari Roma",331.9,77.46,60.47,66.78,"https://a9hub.top/","罗马 法拉利"],
+  ["Porsche 911 GT1 Evolution",343.2,75.15,53.67,68.89,"https://a9hub.top/","911GT1 保时捷"],
+  ["Pininfarina H2 Speed",318,79.83,59.4,57,"https://a9hub.top/","H2 宾尼法利纳"],
+  ["Ford Mustang RTR Spec 5 10th Anniv",335.2,75.65,46.89,73.82,"https://a9hub.top/","野马RTR 福特"],
+  ["Aston Martin Vulcan",343.1,79.43,48.02,65.15,"https://a9hub.top/","火神 阿斯顿·马丁"],
+  ["Lamborghini Asterion",336.6,81.05,45.56,68.21,"https://a9hub.top/","蓝牛 兰博基尼"],
+  ["Dodge Viper ACR",303.4,77.67,62.24,57.44,"https://a9hub.top/","ACR 道奇"],
+  ["Ford GT",362.8,77.54,38.82,65.38,"https://a9hub.top/","福特GT 福特"],
+  ["Exotic Rides W70",329.7,80.21,45.2,56.71,"https://a9hub.top/","W70 Exotic Rides"],
+  ["Nissan Z GT4",345,81.15,54.32,62.04,"https://a9hub.top/","日产GT4 日产"],
+  ["Ferrari Daytona SP3",348.8,80.46,54.89,60.3,"https://a9hub.top/","法拉利SP3 法拉利"],
+  ["Ferrari 296 GTB",341.6,81.23,65,52.13,"https://a9hub.top/","296GTB 法拉利"],
+  ["De Tomaso P900",331.8,82.95,62,59.08,"https://a9hub.top/","P900 德·托马索"],
+  ["Maserati MC20 GT2",336.3,83.68,63.95,46.53,"https://a9hub.top/","MC20GT2 玛莎拉蒂"],
+  ["Praga Bohema",315.7,80.72,80.22,69.65,"https://a9hub.top/","薄荷马 普拉加"],
+  ["Mercedes-Benz Mercedes-AMG GT Black Series",335.6,81.67,60.63,67.23,"https://a9hub.top/","黑梅奔 梅赛德斯-奔驰"],
+  ["DS Automobiles DS E-Tense Performance",318.7,90.06,76.68,61.55,"https://a9hub.top/","DSP DS"],
+  ["Porsche Panamera Turbo S",326.3,88.03,72.48,58.56,"https://a9hub.top/","帕拉梅拉 保时捷"],
+  ["Ares S1",307.8,89.55,78.93,68.93,"https://a9hub.top/","阿瑞斯s1 阿瑞斯"],
+  ["Jaguar XE SV Project 8",338.7,78.28,48.14,62.98,"https://a9hub.top/","Project8 捷豹"],
+  ["Arash AF8 Falcon Edition",333.1,76.78,66.16,77.11,"https://a9hub.top/","AF8 阿拉什"],
+  ["Mercedes-Benz 2022 Showcar Vision AMG",335.1,75.32,51.68,59.18,"https://a9hub.top/","VisionAMG 梅赛德斯-奔驰"],
+  ["Toyota GR Supra 2023",315.1,80.38,73.43,56.83,"https://a9hub.top/","Supra2023 丰田"],
+  ["TVR Sagaris",321,75.52,70.65,74.61,"https://a9hub.top/","Sagaris TVR"],
+  ["Jaguar XJR-15",320.6,80.98,71.28,61.34,"https://a9hub.top/","XJR-15 捷豹"],
+  ["Porsche Mission R",312.1,87.92,63.47,62.72,"https://a9hub.top/","Mission R 保时捷"],
+  ["Porsche 911 50 Years Porsche Design",312.1,79.72,84.61,70.45,"https://a9hub.top/","911 50周年 保时捷"],
+  ["Saleen S1",305.3,76.74,82.8,74.07,"https://a9hub.top/","萨林S1 赛麟"],
+  ["Nissan 370Z Nismo Neon Edition",303,76.11,91.69,80.02,"https://a9hub.top/","霓虹370 日产"],
+  ["Arash AF10",336.9,78.71,50.36,59.53,"https://a9hub.top/","阿拉什 阿拉什"],
+  ["Maserati MC12",342.9,76.48,72.36,38.94,"https://a9hub.top/","MC12 玛莎拉蒂"],
+  ["Volkswagen Electric R",291.1,88.6,58.15,68.06,"https://a9hub.top/","大众电R 大众"],
+  ["Donkervoort D8 GTO Individual Series",306.8,85.56,86.91,64,"https://a9hub.top/","拖拉机 唐克沃特"],
+  ["Bolwell MK X Nagari 500",314.5,81.59,65.85,62.99,"https://a9hub.top/","MK500 博尔韦尔"],
+  ["Ferrari F50",338.8,73.82,57.63,61.34,"https://a9hub.top/","F50 法拉利"],
+  ["Chevrolet Corvette C7.R",303.6,80.57,47.14,57.23,"https://a9hub.top/","C7R 雪佛兰"],
+  ["Bentley Continental GT3",301.3,74.78,72.59,50.84,"https://a9hub.top/","欧陆 GT3 宾利"],
+  ["Aston Martin V12 Speedster",312.9,80.12,57.27,62.49,"https://a9hub.top/","V12 阿斯顿·马丁"],
+  ["Porsche Taycan Turbo S",278.8,83.66,75.47,56.94,"https://a9hub.top/","电蛙 保时捷"],
+  ["Jaguar XKR-S GT",321.2,72.92,52.08,60.42,"https://a9hub.top/","XKR 捷豹"],
+  ["Renault TreZor",306,78.42,63.39,67.48,"https://a9hub.top/","TreZor 雷诺"],
+  ["Ford Shelby GR-1",321.7,75.28,69.63,66.64,"https://a9hub.top/","阿巴 福特"],
+  ["TVR Griffith",338.7,69.24,47.17,37.2,"https://a9hub.top/","TVR TVR"],
+  ["Rezvani Beast X",299.4,84.62,55.9,58.32,"https://a9hub.top/","野兽 雷兹瓦尼"],
+  ["Honda Civic Type-R",285.1,81.94,68.03,62.22,"https://a9hub.top/","思域 本田"],
+  ["Porsche 911 Targa 4S",315,75.21,41.38,38.11,"https://a9hub.top/","Targa 保时捷"],
+  ["Ford Shelby GT350R",299.7,75.05,58.85,52.76,"https://a9hub.top/","野马 福特"],
+  ["Jaguar F-Type SVR",340.3,75.36,49.18,49.91,"https://a9hub.top/","捷豹 捷豹"],
+  ["BMW M4 GTS",326.5,73.72,51.19,52.48,"https://a9hub.top/","m4 宝马"],
+  ["Lotus Elise Sprint 220",269.5,81.95,83.1,72.37,"https://a9hub.top/","小莲花 路特斯"],
+  ["Porsche 718 Cayman",295.6,70.35,61.81,60.07,"https://a9hub.top/","718 保时捷"],
+  ["Aston Martin DB11",340.4,74.19,43.19,55.36,"https://a9hub.top/","DB11 阿斯顿·马丁"],
+  ["Mercedes-Benz AMG GT S",329.4,71.34,42.69,54.66,"https://a9hub.top/","AMG 梅赛德斯-奔驰"],
+  ["Porsche 911 GTS Coupe",328.7,71.18,45.84,56.54,"https://a9hub.top/","911GTS 保时捷"],
+  ["Dodge Challenger 392 Hemi Scat Pack",302.7,73.67,43.61,62.88,"https://a9hub.top/","392 道奇"],
+  ["Lotus Evora Sport 410",317.7,71.7,50.93,47.05,"https://a9hub.top/","大莲花 路特斯"],
+  ["Kimera EVO37",297.8,80.98,78.18,57.43,"https://a9hub.top/","EVO37 基美拉"],
+  ["Ford Mustang Mach-E1400",301.2,82.87,51.83,64.82,"https://a9hub.top/","电马 福特"],
+  ["Toyota GR Supra Racing Concept",312,71.98,61.16,53.66,"https://a9hub.top/","Supra 丰田"],
+  ["Alfa Romeo Giulia GTAm",312.2,77.28,45.17,47.09,"https://a9hub.top/","Giulia 阿尔法·罗密欧"],
+  ["Glickenhaus 004C",311.2,76.75,56.89,60.87,"https://a9hub.top/","004C 格里肯豪斯"],
+  ["Ginetta G60",290.7,71.54,74.8,62.64,"https://a9hub.top/","G60 吉内塔"],
+  ["Praga R1",283.3,87.8,62.25,60.92,"https://a9hub.top/","布拉格R1 普拉加"],
+  ["Lamborghini Countach 25th Anniversary",305.4,71.69,65.58,49.7,"https://a9hub.top/","康塔什 兰博基尼"],
+  ["Lotus Emira",307.4,70.86,57.47,53.42,"https://a9hub.top/","Emira 路特斯"],
+  ["Porsche 911 Carrera RS 3.8",301.9,72.15,71.66,35.99,"https://a9hub.top/","卡雷拉RS 保时捷"],
+  ["Infiniti Project Black S",281.5,76.19,66.98,64.67,"https://a9hub.top/","英菲尼迪 英菲尼迪"],
+  ["Peugeot SR1",310.5,71.51,52.39,31.19,"https://a9hub.top/","SR1 标致"],
+  ["Renault Dezir",293.2,65.56,69.43,68.44,"https://a9hub.top/","Dezir 雷诺"],
+  ["Nissan Leaf Nismo RC",250.6,79.16,60.56,65.5,"https://a9hub.top/","聆风RC 日产"],
+  ["Porsche Boxster 25th",298.7,72.12,46.1,54.35,"https://a9hub.top/","Boxster 保时捷"],
+  ["DS Automobiles DS E-Tense",270.1,76.07,81.27,72.3,"https://a9hub.top/","DS DS"],
+  ["Chevrolet Camaro ZL1 50TH Edition",272.1,78.05,68.91,58.98,"https://a9hub.top/","50th 雪佛兰"],
+  ["BMW 3.0 CSL Hommage",297.5,73.34,50.01,51.18,"https://a9hub.top/","宝马3.0 宝马"],
+  ["Volkswagen XL Sport Concept",291.2,60.31,62.02,61.94,"https://a9hub.top/","大众 大众"],
+  ["KTM X-Bow GTX",247.5,83.84,64.99,66.99,"https://a9hub.top/","GTX KTM"],
+  ["Dodge Challenger SRT8",308.4,72.65,41.02,52.47,"https://a9hub.top/","srt8 道奇"],
+  ["Nissan 370Z Nismo",268.5,66.61,81.83,67.07,"https://a9hub.top/","370 日产"],
+  ["Chevrolet Camaro LT",284.1,64.81,48.39,63.29,"https://a9hub.top/","LT 雪佛兰"],
+  ["BMW Z4 LCI E89",266.8,68.86,47.43,57.49,"https://a9hub.top/","Z4 宝马"],
+  ["Mitsubishi Lancer Evolution",270.1,55.03,53.79,68.19,"https://a9hub.top/","三菱 三菱"],
+  ["Raesr Aglaia",439.3,85.88,47.8,46.08,"https://a9hub.top/","阿格莱雅 雷斯尔"],
+  ["FV Frangivento GT65",371.1,81.8,51.98,54.39,"https://a9hub.top/","弗朗吉文托"],
+  ["Apollo IE",348,84.58,72.82,68.9,"https://a9hub.top/","阿波罗IE 阿波罗"],
+  ["BMW M Hybrid V8",355.8,81.39,67.1,69.84,"https://a9hub.top/","v8 宝马"],
+  ["Lotus Emeya",276.5,81.79,75.33,67.23,"https://a9hub.top/","Emeya 路特斯"],
+  ["BMW M4 GT3",346.9,79.57,69.5,65.65,"https://a9hub.top/","gt3 宝马"],
+  ["Mercedes-Benz CLK-GTR",332.7,78.92,70.49,57.24,"https://a9hub.top/","clk-gtr 梅赛德斯-奔驰"],
+  ["BMW i8 Roadster",273.1,79.73,78.63,66.87,"https://a9hub.top/","i8 宝马"],
+  ["Koenigsegg One:1",454.8,83.18,59.7,43.83,"https://a9hub.top/","旺旺 科尼赛克"],
+  ["Ford Mustang RTR Spec 5-FD",415,78.77,54.9,74.41,"https://a9hub.top/","大野马 福特"],
+  ["Ferrari SF90 XX Stradale",361.2,85.73,79.17,62.85,"https://a9hub.top/","SF90 XX 法拉利"],
+  ["Aston Martin DBS 770 Ultimate",353.9,77.55,62.96,43.03,"https://a9hub.top/","DBS 770 阿斯顿·马丁"],
+  ["Ferrari Monza SP1",319.6,82.32,62.53,63.22,"https://a9hub.top/","SP1 法拉利"],
+  ["Italdesign DaVinci",278,83.52,73.57,55.34,"https://a9hub.top/","达芬奇 意大利设计"],
+  ["Automobili Pininfarina B95",395.9,86.93,60.35,45.07,"https://a9hub.top/","B95 宾尼法利纳汽车"],
+  ["LEGO Technic Ferrari XX K",364.6,81.82,45.96,64.44,"https://a9hub.top/","乐高Fxx K 乐高机械组"],
+  ["Ferrari LaFerrari",364.6,80.23,43.06,71.4,"https://a9hub.top/","拉法 法拉利"],
+  ["Raesr Tartarus",538.7,90.64,61.77,42.69,"https://a9hub.top/","超光速 雷斯尔"],
+  ["Czinger 21C",417.1,89.07,54.43,51.03,"https://a9hub.top/","21C 辛格"],
+  ["Hennessey Venom F5",512.4,80.68,49.02,49.52,"https://a9hub.top/","F5 轩尼诗"],
+  ["Zenvo Aurora Tur",467.5,81.73,56.53,42.65,"https://a9hub.top/","极光 Zenvo"],
+  ["Bugatti Mistral",431.7,84.4,60.79,65.81,"https://a9hub.top/","风龙 布加迪"],
+  ["Koenigsegg Gemera",413.2,88.58,66.06,48.36,"https://a9hub.top/","杰弟 科尼赛克"],
+  ["Deus Vayanne",438.7,86.55,47.61,47.08,"https://a9hub.top/","冬王 丢斯"],
+  ["Bugatti LA Voiture Noire",443.2,84.88,54.68,63.8,"https://a9hub.top/","黑龙 布加迪"],
+  ["Koenigsegg CCXR",412.2,79.4,79.09,71.51,"https://a9hub.top/","CCXR 科尼赛克"],
+  ["Hennessey Venom GT",468.4,78.54,47.88,46.91,"https://a9hub.top/","毒液GT 轩尼诗"],
+  ["HTT Locus Plethore LC750",414.5,78.04,75.86,84.58,"https://a9hub.top/","HTT HTT"],
+  ["Koenigsegg Agera RS",484.8,79.67,60.03,58.86,"https://a9hub.top/","安哥拉 科尼赛克"],
+  ["SSC Tuatara",487,82.51,48.74,62.05,"https://a9hub.top/","大蜥蜴 西尔贝"],
+  ["Rimac Nevera",421.6,87.69,51.36,56.53,"https://a9hub.top/","兔子 锐马克"],
+  ["Aspark Owl",414.8,89.34,51.72,51.29,"https://a9hub.top/","猫头鹰 阿斯帕克"],
+  ["Lamborghini Sian FKP 37",374,82.06,92.32,81.15,"https://a9hub.top/","西安 兰博基尼"],
+  ["Bugatti Centodieci",402.7,86.51,62.58,77.09,"https://a9hub.top/","白龙 布加迪"],
+  ["Koenigsegg Jesko",497,80.1,48.21,58.25,"https://a9hub.top/","杰哥 科尼赛克"],
+  ["Bugatti Chiron Pur Sport",397.8,87.01,73.62,65.32,"https://a9hub.top/","PS龙 布加迪"],
+  ["Toroidion 1MW",460.4,81.28,60.34,54.16,"https://a9hub.top/","1MW 托罗伊迪恩"],
+  ["Mazzanti Evantra Millecavalli",412.3,82.6,63.85,64.81,"https://a9hub.top/","皇后 马赞蒂"],
+  ["Tushek TS 900 Racer Pro",395,86.02,73.71,61.51,"https://a9hub.top/","TS900 图舍克"],
+  ["BXR Bailey Blade GT1",449,80.51,46.84,70.64,"https://a9hub.top/","BXR BXR"],
+  ["Bugatti Chiron",443.4,84.4,45.62,63.63,"https://a9hub.top/","肥龙 布加迪"],
+  ["Torino Design Super Sport",405.3,82.28,62.3,75.81,"https://a9hub.top/","都灵 都灵设计"],
+  ["Inferno Automobili Inferno",412.9,83.02,54.86,76.59,"https://a9hub.top/","地狱火 英菲诺"],
+  ["SSC Ultimate Aero TT",419.4,79.67,50.01,51.45,"https://a9hub.top/","Aero TT 西尔贝"],
+  ["Ford Team FordZilla P1",385.5,87.77,83.66,51.4,"https://a9hub.top/","福特P1 福特"],
+  ["Ajlani Drakuma",441,81.56,47.91,60.58,"https://a9hub.top/","Drakuma 阿吉拉尼"],
+  ["Ultima RS",418.2,81.41,63.54,63.28,"https://a9hub.top/","奥特曼 奥尔蒂马"],
+  ["W Motors Lykan HyperSport Neon Edition",407.5,80.48,53.75,65.9,"https://a9hub.top/","霓虹狼 W汽车"],
+  ["Saleen S7 twin Turbo",429.9,69.5,68.97,77.31,"https://a9hub.top/","赛琳s7 赛麟"],
+  ["Koenigsegg Regera",457.1,80.88,44.32,48.06,"https://a9hub.top/","统治 科尼赛克"],
+  ["Bugatti Divo",389.5,85.66,61.5,74.02,"https://a9hub.top/","大爷 布加迪"],
+  ["Faraday Future FFZero1",423,86.06,42.83,51.7,"https://a9hub.top/","法拉第 法拉第未来"],
+  ["McLaren Speedtail",416.7,81.11,56.63,74.19,"https://a9hub.top/","速尾 迈凯伦"],
+  ["Arash Imperium",397.5,84.85,60.77,56.61,"https://a9hub.top/","Imperium 阿拉什"],
+  ["Nio EP9",372.8,82.96,77.72,76.17,"https://a9hub.top/","EP9 蔚来"],
+  ["Lamborghini Countach LPI 800-4",373.7,82.53,86.93,73.04,"https://a9hub.top/","新康 兰博基尼"],
+  ["Naran Hyper Coupe",383.4,85.79,67.31,65.58,"https://a9hub.top/","纳兰 纳兰"],
+  ["Pagani Imola",378.5,80.26,72.44,71.29,"https://a9hub.top/","伊莫拉 帕加尼"],
+  ["TechRules AT96 Dragon Boat Edition",366.4,87.23,75.05,72.62,"https://a9hub.top/","腾风龙舟 泰克鲁斯·腾风"],
+  ["Automobili Pininfarina Battista",368.3,88.48,80.42,78.22,"https://a9hub.top/","秋王 宾尼法利纳汽车"],
+  ["Ferrari SF90 Stradale",360.1,86.83,93.5,69.88,"https://a9hub.top/","顺丰 法拉利"],
+  ["Rimac Concept S",376.3,84.53,79.09,69.86,"https://a9hub.top/","CS 锐马克"],
+  ["Zenvo TS1 GT Anniversary",420.6,81.28,46.51,62.56,"https://a9hub.top/","自燃 Zenvo"],
+  ["Rimac Concept One",368.7,86.45,84.35,54.75,"https://a9hub.top/","C_One 锐马克"],
+  ["Aston Martin Valkyrie",378.1,80.26,77.87,76.72,"https://a9hub.top/","女武神 阿斯顿·马丁"],
+  ["W Motors Fenyr SuperSport",416.9,82.19,43.24,68.6,"https://a9hub.top/","狼王 W汽车"],
+  ["Pininfarina Teorema",422.9,77.14,55.74,51.7,"https://a9hub.top/","Teorema 宾尼法利纳"],
+  ["Vision 1789",389.9,81.28,59.91,72.19,"https://a9hub.top/","1789 视界"],
+  ["Lotus Evija",368.3,81.11,64.98,63.25,"https://a9hub.top/","电莲 路特斯"],
+  ["Bugatti Veyron 16.4 Grand Sport Vitesse",419.1,81.08,49.17,50.7,"https://a9hub.top/","威龙 布加迪"],
+  ["McLaren Senna",358.4,82.91,101.81,78.26,"https://a9hub.top/","塞纳 迈凯伦"],
+  ["Lamborghini Terzo Millennio",393.9,84.8,50.71,64.01,"https://a9hub.top/","电牛 兰博基尼"],
+  ["FV Frangivento Sorpasso GT3",391.3,85.7,56.68,47.35,"https://a9hub.top/","FV 弗朗吉文托"],
+  ["Spania GTA 2015 GTA Spano",383.7,81.2,59.72,69.97,"https://a9hub.top/","给他爱 西班牙GTA"],
+  ["Trion Nemesis",450.7,81.2,41.65,42.14,"https://a9hub.top/","复仇 特里恩"],
+  ["Volkswagen W12 Coupe",370.2,79.02,84.32,54.56,"https://a9hub.top/","W12 大众"],
+  ["Lamborghini SC20",371.3,82.04,72.71,69.2,"https://a9hub.top/","SC20 兰博基尼"],
+  ["Genty Akylone",371.9,82.96,67.99,70.57,"https://a9hub.top/","阿卡龙 詹蒂"],
+  ["Ferrari F8 Tributo",360.8,83.23,94.48,70.07,"https://a9hub.top/","F8 法拉利"],
+  ["Mclaren F1 LM",377,74.64,66.56,73.08,"https://a9hub.top/","F1 迈凯伦"],
+  ["Zenvo TSR-S",353.8,85.32,74.39,69,"https://a9hub.top/","TSR-S Zenvo"],
+  ["Ferrari LaFerrari Aperta",366.3,81.11,82.68,70.32,"https://a9hub.top/","黑拉法 法拉利"],
+  ["Pagani Huayra BC",364.9,77.68,49.12,77.97,"https://a9hub.top/","BC 帕加尼"],
+  ["Porsche 911 GT2 RS ClubSport",357.2,83.75,85.71,73.93,"https://a9hub.top/","911GT2 保时捷"],
+  ["Chrysler ME412",399.1,74.9,66.52,63.39,"https://a9hub.top/","ME412 克莱斯勒"],
+  ["Lamborghini Egoista",366.1,83.27,48.66,71.66,"https://a9hub.top/","自私 兰博基尼"],
+  ["Jaguar XJ220 TWR",383,75.19,60.59,82.2,"https://a9hub.top/","XJ220 捷豹"],
+  ["ATS Automobili GT",391.1,81.47,52.12,46.85,"https://a9hub.top/","ATS GT ATS"],
+  ["Lamborghini Veneno",370,81.16,62.42,78.82,"https://a9hub.top/","毒药 兰博基尼"],
+  ["McLaren 570 Spider",377.3,79.31,66.29,64.91,"https://a9hub.top/","570 迈凯伦"],
+  ["Vanda Electrics Dendrobium",340,86.35,96.39,85.2,"https://a9hub.top/","万达 万达电气"],
+  ["Porsche 918 Spyder",361.9,83.09,47.96,74.74,"https://a9hub.top/","918 保时捷"],
+  ["W Motors Lykan HyperSport",407.6,80.48,40.97,65.17,"https://a9hub.top/","狼崽 W汽车"],
+  ["Icona Vulcano Titanium",381.7,81.38,47.02,66.62,"https://a9hub.top/","火山 意柯那"],
+  ["Koenigsegg Jesko Absolut",548.1,82.27,50.53,52.89,"https://a9hub.top/","杰皇 科尼赛克"],
+  ["Rimac Nevera R",453.1,89.07,76.53,48.88,"https://a9hub.top/","R兔 锐马克"],
+  ["Bugatti Chiron Super Sport 300+",510.1,83.26,64.82,44.58,"https://a9hub.top/","300+ 布加迪"],
+  ["Bugatti Bolide",497.1,84.28,55.58,34.66,"https://a9hub.top/","玻璃 布加迪"],
+  ["Mercedes-Benz Silver Lightning",443.4,80.15,84.1,55.95,"https://a9hub.top/","银电 梅赛德斯-奔驰"],
+  ["Devel Sixteen",556.5,81.37,56.37,38.45,"https://a9hub.top/","恶魔 迪维尔"]
+];
+</script>
+<script>
+'use strict';
+const byName = new Intl.Collator('en', { sensitivity: 'base', numeric: true });
+const cars = cnCars.slice().sort((a, b) => byName.compare(a[0], b[0]));
+const metrics=['最大速度','加速','操控','氮气'];
+const get=id=>document.getElementById(id), query=get('query'), options=get('options');
+const clean=s=>s.normalize('NFKC').toLowerCase().replace(/[^\p{L}\p{N}]/gu,'');
+let target, played, finished, matches=[], active=-1;
+function choose(previous){const pool=cars.filter(car=>car!==previous);return pool[Math.floor(Math.random()*pool.length)];}
+function status(msg){get('message').textContent=msg;}
+function counter(){get('counter').textContent='已猜 '+played.size+' 次';}
+function buildRoster() {
+  const groups = new Map();
+  const buttons = new Map();
+  const roster = get('roster');
+  for (const car of cars) {
+    const letter = car[0].normalize('NFD')[0].toUpperCase();
+    const key = /^[A-Z]$/.test(letter) ? letter : '#';
+    if (!groups.has(key)) {
+      const group = document.createElement('section');
+      group.className = 'roster-group';
+      const heading = document.createElement('h4');
+      heading.textContent = key;
+      const list = document.createElement('ul');
+      list.className = 'roster';
+      group.append(heading, list);
+      roster.append(group);
+      const jump = document.createElement('button');
+      jump.type = 'button';
+      jump.textContent = key;
+      jump.setAttribute('aria-label', '跳到 ' + key + ' 组');
+      jump.addEventListener('click', () => {
+        roster.scrollTop += group.getBoundingClientRect().top - roster.getBoundingClientRect().top;
+      });
+      get('alphabet').append(jump);
+      groups.set(key, list);
+    }
+    const entry = document.createElement('li');
+    const button = document.createElement('button');
+    button.type = 'button';
+    button.addEventListener('click', () => pick(car));
+    entry.append(button);
+    groups.get(key).append(entry);
+    buttons.set(car, button);
+  }
+  return buttons;
+}
+const rosterButtons = buildRoster();
+get('roster-count').textContent=cars.length+' 辆';
+get('scope').textContent = cnCoverage;
+function updateRoster(){for(const [c,button] of rosterButtons){button.textContent=c[0]+(played.has(c)?' · 已猜':'');button.disabled=finished||played.has(c);button.setAttribute('aria-pressed',String(!finished&&query.value===c[0]));}}
+function hide(){options.hidden=true;query.setAttribute('aria-expanded','false');query.removeAttribute('aria-activedescendant');active=-1;matches=[];}
+function search(){const s=clean(query.value);return cars.filter(c=>!s||clean(c[0]).includes(s)||clean(c[6]).includes(s));}
+function suggest(){if(finished)return;matches=search().filter(c=>!played.has(c));active=-1;query.removeAttribute('aria-activedescendant');
+  options.replaceChildren(...matches.map((c,i)=>{const item=document.createElement('div');item.id='option-'+i;item.className='choice';item.role='option';item.setAttribute('aria-selected','false');item.textContent=c[0];item.addEventListener('pointerdown',e=>e.preventDefault());item.addEventListener('click',()=>pick(c));return item;}));
+  options.hidden=!matches.length;query.setAttribute('aria-expanded',String(!options.hidden));}
+function pick(c){query.value=c[0];hide();query.focus();hide();updateRoster();status('已选 '+c[0]+'，按回车或点击提交。');}
+function relation(a,b){return a>b?['high','↑ 偏高']:a<b?['low','↓ 偏低']:['same','= 相同'];}
+function stats(c,compare){const grid=document.createElement('div');grid.className='stats';metrics.forEach((label,i)=>{const box=document.createElement('div');box.className='stat';const title=document.createElement('span');title.className='label';title.textContent=label;const value=document.createElement('b');value.textContent=c[i+1].toFixed(2);box.append(title,value);if(i===0){const unit=document.createElement('small');unit.textContent='km/h';box.append(unit);}if(compare){const tip=document.createElement('small');[tip.className,tip.textContent]=relation(c[i+1],target[i+1]);box.append(tip);}grid.append(box);});return grid;}
+function end(){finished=true;hide();query.disabled=get('submit').disabled=true;updateRoster();
+  status('已找到目标车辆，共猜测 '+played.size+' 次。');
+  const box=get('result'), title=document.createElement('strong'), link=document.createElement('a');title.textContent='神秘车型：'+target[0];link.href=target[5];link.textContent='数据来源 ↗';link.target='_blank';link.rel='noopener';box.replaceChildren(title,link,stats(target,false));box.hidden=false;get('new').focus();}
+function guess(c){if(finished)return;if(played.has(c)){status('这辆车已经猜过了。');return;}
+  played.add(c);counter();const row=document.createElement('li'), top=document.createElement('div'), name=document.createElement('strong'), num=document.createElement('small');top.className='rowtop';name.textContent=c[0];num.textContent='#'+String(played.size).padStart(2,'0')+(c===target?' · 猜中':'');top.append(name,num);row.append(top,stats(c,true));get('history').prepend(row);get('empty').hidden=true;query.value='';hide();
+  if(c===target)end();else{updateRoster();query.focus();hide();status('已记录 '+c[0]+'，可以继续猜。');}}
+function reset(focus=false){target=choose(target);played=new Set();finished=false;query.disabled=get('submit').disabled=false;query.value='';hide();get('history').replaceChildren();get('empty').hidden=false;get('result').hidden=true;get('result').replaceChildren();counter();updateRoster();status('不限次数。从下方名单选车，或在搜索框输入车型。');if(focus){query.focus();hide();}}
+get('form').addEventListener('submit',e=>{e.preventDefault();if(finished)return;if(active>=0){pick(matches[active]);return;}const q=clean(query.value), found=search(), exact=cars.find(c=>clean(c[0])===q);if(exact)guess(exact);else if(q&&found.length===1)guess(found[0]);else{status(q?'请选择列表中的具体车型。':'请输入或选择一辆车。');query.focus();suggest();}});
+query.addEventListener('focus',suggest);query.addEventListener('click',suggest);query.addEventListener('input',()=>{suggest();updateRoster();});query.addEventListener('blur',hide);
+query.addEventListener('keydown',e=>{if(e.key==='Escape'){hide();return;}if(!['ArrowDown','ArrowUp'].includes(e.key))return;e.preventDefault();if(options.hidden)suggest();if(!matches.length)return;const d=e.key==='ArrowDown'?1:-1;active=active<0?(d>0?0:matches.length-1):(active+d+matches.length)%matches.length;[...options.children].forEach((el,i)=>{el.classList.toggle('active',i===active);el.setAttribute('aria-selected',String(i===active));});const selected=options.children[active];query.setAttribute('aria-activedescendant',selected.id);selected.scrollIntoView({block:'nearest'});});
+get('new').addEventListener('click',()=>reset(true));reset();
+</script></body></html>
